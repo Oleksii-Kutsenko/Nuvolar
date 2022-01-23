@@ -9,6 +9,7 @@ from fastapi_sqlalchemy import db
 from models import Aircraft as ModelAircraft
 from schemas import Aircraft as SchemaAircraft
 
+# TODO: Create Settings Class
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 load_dotenv(os.path.join(BASE_DIR, '.env'))
 
