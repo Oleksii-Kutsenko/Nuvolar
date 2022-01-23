@@ -2,33 +2,39 @@ import os
 
 import uvicorn
 from dotenv import load_dotenv
-from fastapi import FastAPI
-from fastapi_sqlalchemy import DBSessionMiddleware
-from fastapi_sqlalchemy import db
+from fastapi import FastAPI, Depends
+from sqlalchemy.orm import Session
 
-from models import Aircraft as ModelAircraft
+import crud
+import models
+from database import engine, SessionLocal
 from schemas import Aircraft as SchemaAircraft
 
 # TODO: Create Settings Class
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 load_dotenv(os.path.join(BASE_DIR, '.env'))
 
+models.Base.metadata.create_all(bind=engine)
+
 app = FastAPI()
 
-app.add_middleware(DBSessionMiddleware, db_url=os.environ['DATABASE_URL'])
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
 
 @app.get('/')
 async def root():
-    return {'name': 'Fleet API 0.0.1'}
+    return {'name': os.environ['API_NAME']}
 
 
 @app.post('/aircraft/', response_model=SchemaAircraft)
-def create_aircraft(aircraft: SchemaAircraft):
-    db_aircraft = ModelAircraft(serial_number=aircraft.serial_number, manufacturer=aircraft.manufacturer)
-    db.session.add(db_aircraft)
-    db.session.commit()
-    return db_aircraft
+def create_aircraft(aircraft: SchemaAircraft, db: Session = Depends(get_db)):
+    return crud.create_aircraft(db, aircraft)
 
 
 if __name__ == '__main__':
