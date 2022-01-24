@@ -1,0 +1,22 @@
+[
+  {
+    "name": "API_NAME",
+    "value": "Fleet API 0.0.1"
+  },
+  {
+    "name": "POSTGRES_USER",
+    "value": "postgres"
+  },
+  {
+    "name": "POSTGRES_PASSWORD",
+    "value": "postgres"
+  },
+  {
+    "name": "POSTGRES_HOST",
+    "value": "127.0.0.1"
+  },
+  {
+    "name": "POSTGRES_DB",
+    "value": "db"
+  }
+]

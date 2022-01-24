@@ -1,18 +1,16 @@
 import os
 
 import uvicorn
-from dotenv import load_dotenv
 from fastapi import FastAPI, Depends
 from sqlalchemy.orm import Session
 
 import crud
 import models
 from database import engine, SessionLocal
+from manage import configure_app
 from schemas import Aircraft as SchemaAircraft
 
-# TODO: Create Settings Class
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-load_dotenv(os.path.join(BASE_DIR, '.env'))
+configure_app(os.environ['FASTAPI_ENV'])
 
 models.Base.metadata.create_all(bind=engine)
 
