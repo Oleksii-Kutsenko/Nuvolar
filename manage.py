@@ -148,6 +148,7 @@ def test(args):
         cmdline.extend(args)
         subprocess.call(cmdline)
     finally:
+        run_sql([f"DROP DATABASE {os.getenv('FASTAPI_ENV')}"])
         cmdline = docker_compose_cmdline('down')
         subprocess.call(cmdline)
 
