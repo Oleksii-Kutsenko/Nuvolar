@@ -71,7 +71,7 @@ def run_sql(statements):
         dbname=os.getenv("POSTGRES_DB"),
         user=os.getenv("POSTGRES_USER"),
         password=os.getenv("POSTGRES_PASSWORD"),
-        host=os.getenv("POSTGRES_HOSTNAME"),
+        host=os.getenv("POSTGRES_HOST"),
         port=os.getenv("POSTGRES_PORT"),
     )
 
@@ -130,25 +130,26 @@ def test(args):
     os.environ['FASTAPI_ENV'] = 'testing'
     configure_app(os.getenv('FASTAPI_ENV'))
 
-    cmdline = docker_compose_cmdline('up - d')
+    cmdline = docker_compose_cmdline('up -d')
     subprocess.call(cmdline)
 
-    cmdline = docker_compose_cmdline("logs postgres")
+    cmdline = docker_compose_cmdline("logs db")
     wait_for_logs(cmdline, 'ready to accept connections')
 
-    run_sql(f"CREATE DATABASE {os.getenv('FASTAPI_ENV')}")
+    try:
+        run_sql([f"CREATE DATABASE {os.getenv('FASTAPI_ENV')}"])
 
-    cmdline = [
-        'pytest',
-        '-svv',
-        '--cov=application',
-        '--cov-report=term-missing'
-    ]
-    cmdline.extend(args)
-    subprocess.call(cmdline)
-
-    cmdline = docker_compose_cmdline('down')
-    subprocess.call(cmdline)
+        cmdline = [
+            'pytest',
+            '-svv',
+            '--cov=application',
+            '--cov-report=term-missing'
+        ]
+        cmdline.extend(args)
+        subprocess.call(cmdline)
+    finally:
+        cmdline = docker_compose_cmdline('down')
+        subprocess.call(cmdline)
 
 
 if __name__ == '__main__':

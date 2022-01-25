@@ -1,4 +1,3 @@
-alembic==1.4.5
-fastapi==0.72.0
-psycopg2-binary==2.9.3
-uvicorn[standard]==0.17.0
+-r test.txt
+alembic==1.7.5
+pylint==2.11.1
