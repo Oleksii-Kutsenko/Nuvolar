@@ -1,6 +1,6 @@
 from sqlalchemy import Column, String
 
-from database import Base
+from application.database import Base
 
 
 class Aircraft(Base):

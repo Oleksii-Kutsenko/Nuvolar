@@ -4,11 +4,11 @@ import uvicorn
 from fastapi import FastAPI, Depends
 from sqlalchemy.orm import Session
 
-import crud
-import models
-from database import engine, SessionLocal
+from application import crud
+from application import models
+from application.database import engine, SessionLocal
 from manage import configure_app
-from schemas import Aircraft as SchemaAircraft
+from application.schemas import Aircraft as SchemaAircraft
 
 configure_app(os.environ['FASTAPI_ENV'])
 

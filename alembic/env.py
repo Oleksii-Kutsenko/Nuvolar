@@ -5,7 +5,7 @@ from alembic import context
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
-import database
+from application import database
 from manage import configure_app
 
 configure_app(os.environ['FASTAPI_ENV'])

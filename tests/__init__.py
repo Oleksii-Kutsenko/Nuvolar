@@ -3,8 +3,8 @@ import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from main import app
-from database import Base
+from application.main import app
+from application.database import Base
 
 SQLALCHEMY_DATABASE_URL = f"postgresql+psycopg2://{os.environ['POSTGRES_USER']}:{os.environ['POSTGRES_PASSWORD']}" \
                           f"@{os.environ['TEST_POSTGRES_DB']}:5432"

@@ -1,7 +1,6 @@
 from sqlalchemy.orm import Session
 
-import models
-import schemas
+from application import models, schemas
 
 
 def create_aircraft(db: Session, aircraft: schemas.Aircraft):
