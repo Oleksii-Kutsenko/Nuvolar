@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from fastapi.testclient import TestClient
 from application.database import Base
 from application.main import app
-from application.dependencies import get_db
+from application.dependencies import get_session
 
 SQLALCHEMY_DATABASE_URL = f"postgresql+psycopg2://{os.environ['POSTGRES_USER']}:{os.environ['POSTGRES_PASSWORD']}" \
                           f"@{os.environ['POSTGRES_HOST']}:5432"
@@ -21,7 +21,7 @@ def db_engine():
 
 
 @pytest.fixture(scope="function")
-def db(db_engine):
+def session(db_engine):
     connection = db_engine.connect()
     transaction = connection.begin()
     db = Session(bind=connection)
@@ -33,8 +33,8 @@ def db(db_engine):
 
 
 @pytest.fixture(scope="function")
-def client(db):
-    app.dependency_overrides[get_db] = lambda: db
+def client(session):
+    app.dependency_overrides[get_session] = lambda: session
 
     with TestClient(app) as test_client:
         yield test_client

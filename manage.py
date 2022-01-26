@@ -124,7 +124,7 @@ def compose(subcommand):
         docker_process.wait()
         
         
-@cli.command()
+@cli.command(context_settings={'ignore_unknown_options': True})
 @click.argument('args', nargs=-1)
 def test(args):
     os.environ['FASTAPI_ENV'] = 'testing'

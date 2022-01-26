@@ -12,6 +12,6 @@ SQLALCHEMY_DATABASE_URL = f"postgresql+psycopg2://" \
                           f"{os.environ['POSTGRES_USER']}:{os.environ['POSTGRES_PASSWORD']}@" \
                           f"{os.environ['POSTGRES_HOST']}:5432"
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+Session = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()

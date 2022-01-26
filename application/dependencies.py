@@ -1,8 +1,8 @@
-from application.database import SessionLocal
+from application.database import Session
 
 
-def get_db():
-    session = SessionLocal()
+def get_session():
+    session = Session()
     try:
         yield session
     finally:

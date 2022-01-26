@@ -12,3 +12,7 @@ def create_aircraft(session: Session, aircraft: schemas.Aircraft):
     session.commit()
     session.refresh(db_aircraft)
     return db_aircraft
+
+
+def get_aircrafts(session, skip: int = 0, limit: int = 100):
+    return session.query(models.Aircraft).offset(skip).limit(limit).all()
