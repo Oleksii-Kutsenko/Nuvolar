@@ -9,7 +9,7 @@ from application.main import app
 from application.dependencies import get_session
 
 SQLALCHEMY_DATABASE_URL = f"postgresql+psycopg2://{os.environ['POSTGRES_USER']}:{os.environ['POSTGRES_PASSWORD']}" \
-                          f"@{os.environ['POSTGRES_HOST']}:5432"
+                          f"@{os.environ['POSTGRES_HOST']}:{os.environ['POSTGRES_PORT']}"
 
 
 @pytest.fixture(scope="session")

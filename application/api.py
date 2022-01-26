@@ -1,9 +1,9 @@
-from fastapi import Depends, APIRouter, HTTPException
+from fastapi import Depends, APIRouter, HTTPException, Response
 from sqlalchemy.orm import Session
 
-from application import crud
-from application.dependencies import get_session
 from application import schemas
+from application.crud.aircraft import AircraftCRUD
+from application.dependencies import get_session
 
 router = APIRouter()
 
@@ -13,15 +13,15 @@ async def create_aircraft(
         aircraft: schemas.Aircraft,
         session: Session = Depends(get_session)
 ):
-    return crud.create_aircraft(session, aircraft)
+    return AircraftCRUD.create_object(session, aircraft)
 
 
-@router.get('/aircraft/{serial_number}', response_model=schemas.Aircraft)
+@router.get('/aircraft/{serial_number}', response_model=schemas.Aircraft, tags=["aircraft"])
 async def read_aircraft(
         serial_number: str,
         session: Session = Depends(get_session)
 ):
-    aircraft = crud.get_aircraft(session, serial_number)
+    aircraft = AircraftCRUD.get_object(session, serial_number)
     if aircraft:
         return aircraft
     raise HTTPException(status_code=404, detail='Aircraft not found')
@@ -33,28 +33,39 @@ async def read_aircrafts(
         limit: int = 100,
         session: Session = Depends(get_session)
 ):
-    return crud.get_aircrafts(session, skip=skip, limit=limit)
+    return AircraftCRUD.get_objects(session, skip=skip, limit=limit)
 
 
-@router.put('/aircraft/{serial_number}', response_model=schemas.Aircraft)
+@router.put('/aircraft/{serial_number}', response_model=schemas.Aircraft, tags=["aircraft"])
 async def update_aircraft(
         serial_number: str,
         aircraft: schemas.Aircraft,
         session: Session = Depends(get_session)
 ):
-    aircraft = crud.update_aircraft(session, serial_number, aircraft)
+    aircraft = AircraftCRUD.update_object(session, serial_number, aircraft)
     if aircraft:
         return aircraft
     raise HTTPException(status_code=404, detail='Aircraft not found')
 
 
-@router.patch('/aircraft/{serial_number}')
+@router.patch('/aircraft/{serial_number}', tags=["aircraft"])
 async def partial_update_aircraft(
         serial_number: str,
         aircraft: schemas.Aircraft,
         session: Session = Depends(get_session)
 ):
-    aircraft = crud.update_aircraft(session, serial_number, aircraft)
+    aircraft = AircraftCRUD.update_object(session, serial_number, aircraft)
     if aircraft:
         return aircraft
+    raise HTTPException(status_code=404, detail='Aircraft not found')
+
+
+@router.delete('/aircraft/{serial_number}', status_code=204)
+async def delete_aircraft(
+        serial_number: str,
+        session: Session = Depends(get_session)
+):
+    removed = AircraftCRUD.delete_object(session, serial_number)
+    if removed:
+        return Response(status_code=204)
     raise HTTPException(status_code=404, detail='Aircraft not found')
