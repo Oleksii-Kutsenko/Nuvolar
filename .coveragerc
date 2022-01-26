@@ -1,0 +1,2 @@
+[run]
+omit = application/config.py, application/dependencies.py, application/main.py
