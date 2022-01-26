@@ -100,7 +100,7 @@ def cli():
 @click.argument('subcommand', nargs=-1, type=click.Path())
 def start(subcommand):
     configure_app(os.getenv('FASTAPI_ENV'))
-    application_cmdline = ['uvicorn', 'application.main:app']
+    application_cmdline = ['uvicorn', 'application.main:app'] + list(subcommand)
 
     try:
         application_process = subprocess.Popen(application_cmdline)
