@@ -1,5 +1,6 @@
 -r prod.txt
 coverage==6.1.1
+docker-compose==1.29.2
+factory_boy==3.2.1
 pytest==6.2.5
 pytest--cov==3.0.0
-docker-compose==1.29.2
