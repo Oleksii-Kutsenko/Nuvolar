@@ -1,4 +1,6 @@
+from datetime import datetime
 from typing import Optional
+from uuid import UUID
 
 from pydantic import BaseModel
 
@@ -12,4 +14,12 @@ class Aircraft(BaseModel):
 
 
 class Flight(BaseModel):
-    pass
+    id: Optional[UUID]
+    aircraft_serial_number: Optional[str]
+    arrival: datetime
+    arrival_airport: str
+    departure: datetime
+    departure_airport: datetime
+
+    class Config:
+        orm_mode = True

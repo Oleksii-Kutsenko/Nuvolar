@@ -2,7 +2,7 @@ from fastapi import Depends, APIRouter, HTTPException, Response
 from sqlalchemy.orm import Session
 
 from application import schemas
-from application.crud.crud import AircraftCRUD
+from application.crud import AircraftCRUD
 from application.dependencies import get_session
 
 aircraft_router = APIRouter()
@@ -36,7 +36,11 @@ async def read_aircraft(
     raise HTTPException(status_code=404, detail='Aircraft not found')
 
 
-@aircraft_router.get('/aircraft/', response_model=list[schemas.Aircraft], tags=["aircraft"])
+@aircraft_router.get(
+    '/aircraft/',
+    response_model=list[schemas.Aircraft],
+    tags=["aircraft"]
+)
 async def read_aircrafts(
         skip: int = 0,
         limit: int = 100,
@@ -61,7 +65,10 @@ async def update_aircraft(
     raise HTTPException(status_code=404, detail='Aircraft not found')
 
 
-@aircraft_router.patch('/aircraft/{serial_number}', tags=["aircraft"])
+@aircraft_router.patch(
+    '/aircraft/{serial_number}',
+    tags=["aircraft"]
+)
 async def partial_update_aircraft(
         serial_number: str,
         aircraft: schemas.Aircraft,
@@ -73,7 +80,10 @@ async def partial_update_aircraft(
     raise HTTPException(status_code=404, detail='Aircraft not found')
 
 
-@aircraft_router.delete('/aircraft/{serial_number}', status_code=204)
+@aircraft_router.delete(
+    '/aircraft/{serial_number}',
+    status_code=204
+)
 async def delete_aircraft(
         serial_number: str,
         session: Session = Depends(get_session)

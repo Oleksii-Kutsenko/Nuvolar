@@ -61,3 +61,9 @@ class AircraftCRUD(BaseCRUD):
     ModelClass = models.Aircraft
     SchemaClass = schemas.Aircraft
     id_field = models.Aircraft.serial_number
+
+
+class FlightCRUD(BaseCRUD):
+    ModelClass = models.Flight
+    SchemaClass = schemas.Aircraft
+    id_field = models.Flight.id

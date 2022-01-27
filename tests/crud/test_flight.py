@@ -5,7 +5,7 @@ from sqlalchemy.exc import IntegrityError
 
 from application import models
 from application import schemas
-from application.crud.crud import AircraftCRUD
+from application.crud import AircraftCRUD
 from tests.factories import AircraftFactory
 
 

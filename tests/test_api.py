@@ -17,7 +17,7 @@ def test_create_aircraft(client):
     assert response.json() == aircraft.dict()
 
 
-@mock.patch('application.crud.aircraft.AircraftCRUD.get_object', return_value=AircraftFactory.build())
+@mock.patch('application.crud.AircraftCRUD.get_object', return_value=AircraftFactory.build())
 def test_read_aircraft(mock_get_aircraft, client, session):
     db_aircraft = AircraftFactory.build()
     session.add(db_aircraft)
@@ -29,7 +29,7 @@ def test_read_aircraft(mock_get_aircraft, client, session):
     mock_get_aircraft.assert_called_with(session, db_aircraft.serial_number)
 
 
-@mock.patch('application.crud.aircraft.AircraftCRUD.get_object', return_value=None)
+@mock.patch('application.crud.AircraftCRUD.get_object', return_value=None)
 def test_wrong_read_aircraft(mock_get_aircraft, client, session):
     response = client.get(
         f'/aircraft/{uuid4()}'
@@ -37,7 +37,7 @@ def test_wrong_read_aircraft(mock_get_aircraft, client, session):
     assert response.status_code == 404
 
 
-@mock.patch('application.crud.aircraft.AircraftCRUD.get_objects', return_value=[])
+@mock.patch('application.crud.AircraftCRUD.get_objects', return_value=[])
 def test_read_aircrafts(mock_get_aircrafts, client, session):
     client.get(
         '/aircraft/'
@@ -79,7 +79,7 @@ def test_wrong_partial_update_aircraft(client):
     assert response.status_code == 404
 
 
-@mock.patch('application.crud.aircraft.AircraftCRUD.update_object', return_value=AircraftFactory.build())
+@mock.patch('application.crud.AircraftCRUD.update_object', return_value=AircraftFactory.build())
 def test_update_aircraft(mock_update_aircraft, client, session):
     db_aircraft = AircraftFactory.build()
     session.add(db_aircraft)
@@ -96,7 +96,7 @@ def test_update_aircraft(mock_update_aircraft, client, session):
     mock_update_aircraft.assert_called_with(session, db_aircraft.serial_number, schema_aircraft)
 
 
-@mock.patch('application.crud.aircraft.AircraftCRUD.update_object', return_value=AircraftFactory.build())
+@mock.patch('application.crud.AircraftCRUD.update_object', return_value=AircraftFactory.build())
 def test_partial_update_aircraft(mock_partial_update_aircraft, client, session):
     db_aircraft = AircraftFactory.build()
     session.add(db_aircraft)
