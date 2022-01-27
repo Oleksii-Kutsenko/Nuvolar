@@ -1,3 +1,4 @@
+from datetime import datetime
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Response
@@ -46,9 +47,21 @@ async def read_flight(
 async def read_flights(
         skip: int = 0,
         limit: int = 100,
+        arrival_airport: str = None,
+        departure_airport: str = None,
+        departure_min: datetime = None,
+        departure_max: datetime = None,
         session: Session = Depends(get_session)
 ):
-    return FlightCRUD.get_objects(session, skip=skip, limit=limit)
+    return FlightCRUD.get_objects(
+        session,
+        skip=skip,
+        limit=limit,
+        arrival_airport=arrival_airport,
+        departure_airport=departure_airport,
+        departure_min=departure_min,
+        departure_max=departure_max
+    )
 
 
 @flight_router.put(
@@ -84,7 +97,8 @@ async def partial_update_aircraft(
 
 @flight_router.delete(
     '/flight/{_id}',
-    status_code=204
+    status_code=204,
+    tags=["flight"]
 )
 async def delete_aircraft(
         _id: str,

@@ -19,7 +19,7 @@ class Flight(Base):
     __tablename__ = 'flights'
     __table_args__ = (
         CheckConstraint('departure < arrival'),
-        CheckConstraint('departure > CURRENT_TIMESTAMP')
+        CheckConstraint('CURRENT_TIMESTAMP < departure')
     )
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)

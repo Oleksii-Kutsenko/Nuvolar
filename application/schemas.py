@@ -19,7 +19,7 @@ class Flight(BaseModel):
     arrival: datetime
     arrival_airport: str
     departure: datetime
-    departure_airport: datetime
+    departure_airport: str
 
     class Config:
         orm_mode = True

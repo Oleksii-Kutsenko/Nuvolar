@@ -67,3 +67,26 @@ class FlightCRUD(BaseCRUD):
     ModelClass = models.Flight
     SchemaClass = schemas.Aircraft
     id_field = models.Flight.id
+
+    @classmethod
+    def get_objects(
+            cls,
+            session: Session,
+            skip: int = 0,
+            limit: int = 100,
+            arrival_airport=None,
+            departure_airport=None,
+            departure_min=None,
+            departure_max=None
+    ):
+        query = session.query(cls.ModelClass)
+        if arrival_airport:
+            query = query.filter(cls.ModelClass.arrival_airport == arrival_airport)
+        if departure_airport:
+            query = query.filter(cls.ModelClass.departure_airport == departure_airport)
+        if departure_min:
+            query = query.filter(cls.ModelClass.departure > departure_min)
+        if departure_max:
+            query = query.filter(cls.ModelClass.departure < departure_max)
+
+        return query.offset(skip).limit(limit).all()

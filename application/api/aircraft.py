@@ -82,7 +82,8 @@ async def partial_update_aircraft(
 
 @aircraft_router.delete(
     '/aircraft/{serial_number}',
-    status_code=204
+    status_code=204,
+    tags=["aircraft"]
 )
 async def delete_aircraft(
         serial_number: str,
