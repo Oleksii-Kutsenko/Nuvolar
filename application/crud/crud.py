@@ -1,13 +1,19 @@
-from application.database import Session
+from pydantic import BaseModel
+
+from application import models, schemas
+from application.database import Session, Base
 
 
 class BaseCRUD:
-    ModelClass = None
-    SchemaClass = None
+    """
+    Class for the grouping of CRUD operation
+    """
+    ModelClass: Base
+    SchemaClass: BaseModel
     id_field = None
 
     @classmethod
-    def create_object(cls, session: Session, schema: SchemaClass):
+    def create_object(cls, session: Session, schema: BaseModel):
         db_object = cls.ModelClass(**schema.dict())
         session.add(db_object)
         session.commit()
@@ -26,13 +32,14 @@ class BaseCRUD:
         return session.query(cls.ModelClass).offset(skip).limit(limit).all()
 
     @classmethod
-    def update_object(cls, session: Session, _id, schema: SchemaClass):
+    def update_object(cls, session: Session, _id, schema: BaseModel):
         db_object = session.query(cls.ModelClass).filter(cls.id_field == _id).first()
         if db_object is None:
             return None
 
         for attr, value in vars(schema).items():
-            setattr(db_object, attr, value) if value else None
+            value = value if value else None
+            setattr(db_object, attr, value)
 
         session.add(db_object)
         session.commit()
@@ -48,3 +55,9 @@ class BaseCRUD:
         session.delete(db_object)
         session.commit()
         return True
+
+
+class AircraftCRUD(BaseCRUD):
+    ModelClass = models.Aircraft
+    SchemaClass = schemas.Aircraft
+    id_field = models.Aircraft.serial_number

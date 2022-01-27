@@ -5,7 +5,7 @@ from sqlalchemy.exc import IntegrityError
 
 from application import models
 from application import schemas
-from application.crud.aircraft import AircraftCRUD
+from application.crud.crud import AircraftCRUD
 from tests.factories import AircraftFactory
 
 
@@ -79,3 +79,7 @@ def test_update_aircraft(session):
 
     assert updated_aircraft.serial_number == new_serial_number
     assert updated_aircraft.manufacturer == new_manufacturer
+
+
+def test_delete_aircraft(session):
+    pass
