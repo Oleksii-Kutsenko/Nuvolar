@@ -1,39 +1,92 @@
-from sqlalchemy.orm import Session
+from pydantic import BaseModel
 
 from application import models, schemas
+from application.database import Session, Base
 
 
-def create_aircraft(session: Session, aircraft: schemas.Aircraft):
-    db_aircraft = models.Aircraft(
-        serial_number=aircraft.serial_number,
-        manufacturer=aircraft.manufacturer
-    )
-    session.add(db_aircraft)
-    session.commit()
-    session.refresh(db_aircraft)
-    return db_aircraft
+class BaseCRUD:
+    """
+    Class for the grouping of CRUD operation
+    """
+    ModelClass: Base
+    SchemaClass: BaseModel
+    id_field = None
 
+    @classmethod
+    def create_object(cls, session: Session, schema: BaseModel):
+        db_object = cls.ModelClass(**schema.dict())
+        session.add(db_object)
+        session.commit()
+        session.refresh(db_object)
+        return db_object
 
-def get_aircraft(session: Session, serial_number: str):
-    aircraft = session.query(models.Aircraft).filter(models.Aircraft.serial_number == serial_number).first()
-    if aircraft:
-        return aircraft
-    return None
-
-
-def get_aircrafts(session: Session, skip: int = 0, limit: int = 100):
-    return session.query(models.Aircraft).offset(skip).limit(limit).all()
-
-
-def update_aircraft(session: Session, serial_number: str, aircraft: schemas.Aircraft):
-    db_aircraft = session.query(models.Aircraft).filter(models.Aircraft.serial_number == serial_number).first()
-    if db_aircraft is None:
+    @classmethod
+    def get_object(cls, session: Session, _id):
+        db_object = session.query(cls.ModelClass).filter(cls.id_field == _id).first()
+        if db_object:
+            return db_object
         return None
 
-    for attr, value in vars(aircraft).items():
-        setattr(db_aircraft, attr, value) if value else None
+    @classmethod
+    def get_objects(cls, session: Session, skip: int = 0, limit: int = 100):
+        return session.query(cls.ModelClass).offset(skip).limit(limit).all()
 
-    session.add(db_aircraft)
-    session.commit()
-    session.refresh(db_aircraft)
-    return db_aircraft
+    @classmethod
+    def update_object(cls, session: Session, _id, schema: BaseModel):
+        db_object = session.query(cls.ModelClass).filter(cls.id_field == _id).first()
+        if db_object is None:
+            return None
+
+        for attr, value in vars(schema).items():
+            value = value if value else None
+            setattr(db_object, attr, value)
+
+        session.add(db_object)
+        session.commit()
+        session.refresh(db_object)
+        return db_object
+
+    @classmethod
+    def delete_object(cls, session: Session, _id):
+        db_object = session.query(cls.ModelClass).filter(cls.id_field == _id).first()
+        if db_object is None:
+            return False
+
+        session.delete(db_object)
+        session.commit()
+        return True
+
+
+class AircraftCRUD(BaseCRUD):
+    ModelClass = models.Aircraft
+    SchemaClass = schemas.Aircraft
+    id_field = models.Aircraft.serial_number
+
+
+class FlightCRUD(BaseCRUD):
+    ModelClass = models.Flight
+    SchemaClass = schemas.Aircraft
+    id_field = models.Flight.id
+
+    @classmethod
+    def get_objects(
+            cls,
+            session: Session,
+            skip: int = 0,
+            limit: int = 100,
+            arrival_airport=None,
+            departure_airport=None,
+            departure_min=None,
+            departure_max=None
+    ):
+        query = session.query(cls.ModelClass)
+        if arrival_airport:
+            query = query.filter(cls.ModelClass.arrival_airport == arrival_airport)
+        if departure_airport:
+            query = query.filter(cls.ModelClass.departure_airport == departure_airport)
+        if departure_min:
+            query = query.filter(cls.ModelClass.departure > departure_min)
+        if departure_max:
+            query = query.filter(cls.ModelClass.departure < departure_max)
+
+        return query.offset(skip).limit(limit).all()
