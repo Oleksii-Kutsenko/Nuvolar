@@ -8,7 +8,7 @@ from manage import configure_app
 
 
 def create_app():
-    configure_app(os.environ['FASTAPI_ENV'])
+    configure_app(os.environ["FASTAPI_ENV"])
     app = FastAPI()
 
     app.include_router(aircraft_router)

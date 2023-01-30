@@ -1,3 +1,4 @@
+# Keeping for example of project with FastAPI and SQLAlchemy
 Firstly, set-up environment
 ```
 export FASTAPI_ENV=development

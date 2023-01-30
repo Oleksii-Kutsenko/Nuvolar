@@ -8,6 +8,7 @@ class BaseCRUD:
     """
     Class for the grouping of CRUD operation
     """
+
     ModelClass: Base
     SchemaClass: BaseModel
     id_field = None
@@ -70,14 +71,14 @@ class FlightCRUD(BaseCRUD):
 
     @classmethod
     def get_objects(
-            cls,
-            session: Session,
-            skip: int = 0,
-            limit: int = 100,
-            arrival_airport=None,
-            departure_airport=None,
-            departure_min=None,
-            departure_max=None
+        cls,
+        session: Session,
+        skip: int = 0,
+        limit: int = 100,
+        arrival_airport=None,
+        departure_airport=None,
+        departure_min=None,
+        departure_max=None,
     ):
         query = session.query(cls.ModelClass)
         if arrival_airport:

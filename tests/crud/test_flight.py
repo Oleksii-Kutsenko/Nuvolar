@@ -10,14 +10,18 @@ from tests.factories import AircraftFactory
 
 
 def test_create_aircraft(session):
-    aircraft = schemas.Aircraft(serial_number="test_serial_number", manufacturer="Airbus")
+    aircraft = schemas.Aircraft(
+        serial_number="test_serial_number", manufacturer="Airbus"
+    )
     AircraftCRUD.create_object(session, aircraft)
 
     assert session.query(models.Aircraft).count() == 1
 
 
 def test_duplicate_create_aircraft(session):
-    aircraft = schemas.Aircraft(serial_number="test_serial_number", manufacturer="Airbus")
+    aircraft = schemas.Aircraft(
+        serial_number="test_serial_number", manufacturer="Airbus"
+    )
     AircraftCRUD.create_object(session, aircraft)
     with pytest.raises(IntegrityError):
         AircraftCRUD.create_object(session, aircraft)
@@ -71,11 +75,15 @@ def test_update_aircraft(session):
     session.add(db_aircraft)
     session.commit()
 
-    new_serial_number = '-1'
-    new_manufacturer = '-1'
-    schema_aircraft = schemas.Aircraft(serial_number=new_serial_number, manufacturer=new_manufacturer)
+    new_serial_number = "-1"
+    new_manufacturer = "-1"
+    schema_aircraft = schemas.Aircraft(
+        serial_number=new_serial_number, manufacturer=new_manufacturer
+    )
 
-    updated_aircraft = AircraftCRUD.update_object(session, db_aircraft.serial_number, schema_aircraft)
+    updated_aircraft = AircraftCRUD.update_object(
+        session, db_aircraft.serial_number, schema_aircraft
+    )
 
     assert updated_aircraft.serial_number == new_serial_number
     assert updated_aircraft.manufacturer == new_manufacturer

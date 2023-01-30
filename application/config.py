@@ -23,4 +23,5 @@ class TestingConfig(Config):
     """
     Testing configuration
     """
+
     TESTING: bool = True
